@@ -12,26 +12,23 @@
 function despeckle (imgData, option) {
   // check options object & set default variables
   option = option || {}
-  option.type = option.type || 'median'
   option.monochrome = option.monochrome || false
-  option.radius = option.radius || 1
+  option.type = option.type || 'median'
 
-  // Check length of data & avilable pixel size to make sure data is good data
-  var pixelSize = imgData.width * imgData.height
-  var dataLength = imgData.data.length
-  var colorDepth = dataLength / pixelSize
-  if (colorDepth !== 4 && colorDepth !== 1) {
-    throw new Error('ImageObject has incorrect color depth')
+
+  var types = {
+    median: [1,1,1,1,1,1,1,1,1],
+    mean: [1,1,1,1,1,1,1,1,1]
   }
-
-  var newPixelData = new Uint8ClampedArray(pixelSize * (option.monochrome || 4))
-
-  // Your
-  // code
-  // here :) !
-
-
-  // every return from grafi methods should be ImageData object,
-  // internal function `formatter()` will take care of this
-  return formatter(newPixelData, imgData.width, imgData.height)
+  if (!types[option.type]) {
+    throw new Error('Could not find type of filter requested')
+  }
+  var f = types[option.type]
+  return convolution(imgData, {
+    filter: f,
+    divisor: f.reduce(function (p, n) { return p + n }),
+    radius: 1,
+    monochrome: option.monochrome,
+    median: (option.type === 'median')
+  })
 }

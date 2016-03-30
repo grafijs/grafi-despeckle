@@ -17,7 +17,7 @@
       output.width = original.width
       output.height = original.height
       outputCtx.drawImage(original, 0, 0)
-      newImage = grafi.despeckle(outputCtx.getImageData(0, 0, original.width, original.height))
+      newImage = grafi.despeckle(outputCtx.getImageData(0, 0, original.width, original.height),{type:'median'})
       outputCtx.putImageData(newImage, 0, 0)
     }
   </script>
